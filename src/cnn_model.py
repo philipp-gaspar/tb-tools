@@ -14,7 +14,7 @@ from tensorflow.keras import backend as K
 
 import numpy as np
 
-from .utils import parse_images, EarlyStoppingAtSP, create_folder
+from utils import parse_images, EarlyStoppingAtSP, create_folder
 from collections import Counter
 from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import confusion_matrix, roc_curve, auc
