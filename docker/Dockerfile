@@ -14,4 +14,4 @@ RUN useradd -m -u $UID -g $GID -o -s /bin/bash $USERNAME
 #    PYTHON PACKAGES    #
 # ===================== #
 COPY requirements.txt requirements.txt
-RUN pip3 install -r requirements.txt && requirements.txt
+RUN pip3 install -r requirements.txt && rm requirements.txt
