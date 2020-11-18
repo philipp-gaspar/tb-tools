@@ -1,0 +1,5 @@
+numpy
+scipy
+matplotlib
+table_logger
+sklearn

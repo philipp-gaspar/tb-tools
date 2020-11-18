@@ -1,0 +1,1 @@
+docker run -ti -u $(id -u):$(id -g) philippgaspar/tb-brics:latest-gpu bash
