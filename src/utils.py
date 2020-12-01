@@ -85,6 +85,14 @@ def create_folder(path):
     if not os.path.exists(path):
         os.makedirs(path)
 
+def check_file(input_file):
+    try:
+        assert os.path.isfile(input_file)
+    except AssertionError:
+        print('FILE NOT FOUND!')
+        print('%s' % input_file)
+        sys.exit()
+
 def get_label(file_path):
     name = 'TB'
     class_name = file_path.split(os.path.sep)[-2]
