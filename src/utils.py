@@ -1,6 +1,8 @@
 import os
+import sys
 import tensorflow as tf
 import numpy as np
+import glob
 
 
 from tensorflow.keras.callbacks import Callback
@@ -52,6 +54,32 @@ class EarlyStoppingAtSP(Callback):
     def on_train_end(self, logs=None):
         if self.stopped_epoch > 0:
             print('Epoch %05d: early stopping' % (self.stopped_epoch + 1))
+
+# ================== #
+#    DATA HELPERS    #
+# ================== #
+def load_filenames(data_dir, dataset_name):
+    """
+    Read png data and return X and y vectors for model training.
+    """
+    input_files = dict()
+
+    if dataset_name == 'schenzen':
+        file_name = 'CHNCXR_*_0.png'
+        input_files['H0'] = glob.glob(os.path.join(data_dir, file_name))
+        file_name = 'CHNCXR_*_1.png'
+        input_files['H1'] = glob.glob(os.path.join(data_dir, file_name))
+
+        n_H0 = len(input_files['H0'])
+        n_H1 = len(input_files['H1'])
+
+        X = np.asarray(input_files['H0'] + input_files['H1'])
+        y = np.concatenate((np.zeros(n_H0), np.ones(n_H1)))
+    else:
+        print('Error! Not valid dataset name.')
+        sys.exit()
+
+    return X, y
 
 def create_folder(path):
     if not os.path.exists(path):
