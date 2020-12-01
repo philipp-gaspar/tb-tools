@@ -11,6 +11,7 @@ import numpy as np
 from utils import parse_images, create_folder, load_filenames, check_file
 from collections import Counter
 from sklearn.model_selection import StratifiedKFold
+from sklearn.metrics import roc_curve
 from sklearn.decomposition import PCA
 
 # Define global variables
@@ -26,6 +27,13 @@ create_folder(RESULTS_DIR)
 CNN_OUTPUTS_DIR = os.path.join(EXPERIMENTS_DIR, 'CNN', 'outputs')
 
 SEED = 13
+
+def calculate_sp(y_true, y_prob):
+    fpr, tpr, threshold = roc_curve(y_true, y_prob)
+    sp = np.sqrt(np.sqrt(tpr*(1-fpr)) * (0.5*(tpr+(1-fpr))))
+    sp_max = np.argmax(sp)
+
+    return sp[sp_max]
 
 if __name__ == "__main__":
     # -------------------- #
@@ -64,17 +72,24 @@ if __name__ == "__main__":
         width = 128
         height = 128
         channels = 1
-        batch_size = 64
 
+        # train dataset
         train_files_ds = tf.data.Dataset.from_tensor_slices(X_trn)
         train_ds = train_files_ds.map(
             lambda file: parse_images(file, width, height, channels))
-        train_ds = train_ds.batch(batch_size)
 
+        # validation dataset
         valid_files_ds = tf.data.Dataset.from_tensor_slices(X_val)
         valid_ds = valid_files_ds.map(
             lambda file: parse_images(file, width, height, channels))
+
+        # train + validation dataset
+        all_ds = train_ds.concatenate(valid_ds)
+
+        # define batch for dataset pipeline
+        train_ds = train_ds.batch(len(y_trn))
         valid_ds = valid_ds.batch(len(y_val))
+        all_ds = all_ds.batch((len(y_trn)+ len(y_val)))
 
         # Load TensorFlow original trained model
         file_name = 'cnn_fold%i.h5' % fold
@@ -82,17 +97,24 @@ if __name__ == "__main__":
         check_file(input_file)
         orig_model = tf.keras.models.load_model(input_file)
 
+        # SP on all data
+        y_all = np.concatenate((y_trn, y_val))
+        y_prob = orig_model.predict(all_ds)
+        
+        sp = calculate_sp(y_all, y_prob)
+        print(' - SP (all data) = %1.2f' % (100*sp))
+
         # Remove dense layer and feed forward training dataset
         model = tf.keras.Model(inputs=orig_model.input, 
                                outputs=orig_model.get_layer('dense').output)
 
         # Feed forward training data
-        #embeddings = model.predict(train_ds, verbose=1)
-        embeddings = model.predict(valid_ds, verbose=1) # TESTING OF SCRIPT WITH SMALL DATA
-
+        embeddings = model.predict(train_ds, verbose=1)
+        
         # --------------- #
         #    PCA MODEL    #
         # =============== #
+        print('-- PCA MODEL ---')
         n_comp = 2
         pca = PCA(n_components=n_comp, random_state=SEED)
         X_new = pca.fit_transform(embeddings)
@@ -100,12 +122,12 @@ if __name__ == "__main__":
         variance = pca.explained_variance_ratio_
 
         print('\n - Auxiliary Info to Build SOM')
-        print('  First variance: %1.2f' % variance[0])
-        print('  Second variance: %1.2f' % variance[1])
-        print('  Ratio = %1.2f\n' % (variance[0]/variance[1]))
+        print('   First variance: %1.2f' % variance[0])
+        print('   Second variance: %1.2f' % variance[1])
+        print('   Ratio = %1.2f\n' % (variance[0]/variance[1]))
 
         N = 5 * np.sqrt(len(y_trn))
-        print('  N = %1.1f\n' % N)
+        print('   N = %1.1f\n' % N)
 
 
 
