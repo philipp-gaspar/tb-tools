@@ -26,7 +26,9 @@ create_folder(OUTPUTS_DIR)
 create_folder(RESULTS_DIR)
 CNN_OUTPUTS_DIR = os.path.join(EXPERIMENTS_DIR, 'CNN', 'outputs')
 
+# important for reproducibility
 SEED = 13
+np.random.seed(SEED)
 
 def calculate_sp(y_true, y_prob):
     fpr, tpr, _ = roc_curve(y_true, y_prob)

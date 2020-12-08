@@ -31,6 +31,8 @@ create_folder(RESULTS_DIR)
 
 BATCH_SIZE = 64
 EPOCHS = 10
+
+# important for reproducibility
 SEED = 13
 np.random.seed(SEED)
 
