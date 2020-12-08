@@ -104,7 +104,7 @@ if __name__ == '__main__':
     dataset_name = 'schenzen'
     X, y = load_filenames(DATA_DIR, dataset_name)
 
-    exp_name = '%s-Embbedings' % (dataset_name.title())
+    exp_name = '%s-Embeddings' % (dataset_name.title())
     outputs_dir = os.path.join(EXPERIMENTS_DIR, exp_name, 'outputs')
     results_dir = os.path.join(EXPERIMENTS_DIR, exp_name, 'results')
     create_folder(outputs_dir)
