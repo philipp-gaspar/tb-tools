@@ -29,7 +29,7 @@ CNN_OUTPUTS_DIR = os.path.join(EXPERIMENTS_DIR, 'CNN', 'outputs')
 SEED = 13
 
 def calculate_sp(y_true, y_prob):
-    fpr, tpr, threshold = roc_curve(y_true, y_prob)
+    fpr, tpr, _ = roc_curve(y_true, y_prob)
     sp = np.sqrt(np.sqrt(tpr*(1-fpr)) * (0.5*(tpr+(1-fpr))))
     sp_max = np.argmax(sp)
 
