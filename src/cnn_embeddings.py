@@ -119,7 +119,6 @@ if __name__ == '__main__':
 
     fold = 0
     for trn_idx, val_idx in kfold.split(X, y):
-        fold += 1
         print('Fold #%i' % fold)
 
         X_trn, X_val, y_trn, y_val = perform_xval(X, y, trn_idx, val_idx)
@@ -162,3 +161,6 @@ if __name__ == '__main__':
 
         file_path = os.path.join(outputs_dir, 'cnn_emb_fold%i.h5' % fold)
         model.save(file_path, save_format='h5')
+
+        # update fold number
+        fold += 1

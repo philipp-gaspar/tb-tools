@@ -88,7 +88,6 @@ if __name__ == "__main__":
 
     fold = 0
     for trn_idx, val_idx in kfold.split(X, y):
-        fold += 1
         print('Fold #%i' % fold)
 
         # shuffle indexes
@@ -200,6 +199,9 @@ if __name__ == "__main__":
         # ============================== #
         output_name = 'cnn_fold%i.h5' % fold
         model.save(os.path.join(OUTPUT_DIR, output_name), save_format='h5')
+
+        # update fold number
+        fold += 1
 
     print('END TRAINING\n')
 
