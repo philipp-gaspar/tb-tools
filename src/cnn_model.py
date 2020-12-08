@@ -111,11 +111,13 @@ if __name__ == "__main__":
         height = 128
         channels = 1
         
+        # train dataset 
         train_files_ds = tf.data.Dataset.from_tensor_slices(X_trn)
         train_ds = train_files_ds.map(
             lambda file: parse_images(file, width, height, channels))
         train_ds = train_ds.batch(BATCH_SIZE)
 
+        # valid dataset
         valid_files_ds = tf.data.Dataset.from_tensor_slices(X_val)
         valid_ds = valid_files_ds.map(
             lambda file: parse_images(file, width, height, channels))
