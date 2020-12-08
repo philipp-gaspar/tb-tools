@@ -14,7 +14,7 @@ from tensorflow.keras import backend as K
 
 import numpy as np
 
-from utils import parse_images, EarlyStoppingAtSP, create_folder
+from utils import parse_images, EarlyStoppingAtSP, create_folder, load_filenames
 from collections import Counter
 from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import confusion_matrix, roc_curve, auc
@@ -69,17 +69,7 @@ if __name__ == "__main__":
     # ==================== #
     #    LOAD FILENAMES    #
     # ==================== #
-    input_files = dict()
-    file_name = 'CHNCXR_*_0.png'
-    input_files['H0'] = glob.glob(os.path.join(DATA_DIR, file_name))
-    file_name = 'CHNCXR_*_1.png'
-    input_files['H1'] = glob.glob(os.path.join(DATA_DIR, file_name))
-
-    n_H0 = len(input_files['H0'])
-    n_H1 = len(input_files['H1'])
-
-    X = np.asarray(input_files['H0'] + input_files['H1'])
-    y = np.concatenate((np.zeros(n_H0), np.ones(n_H1)))
+    X, y = load_filenames(DATA_DIR, dataset_name='schenzen')
 
     # --- METRIC CONTAINERS --- #
     train_metrics = {'acc': [], 'auc': [], 'tnr': [], 'fnr': [],
