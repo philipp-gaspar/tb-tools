@@ -132,7 +132,7 @@ if __name__ == '__main__':
         file_name = 'cnn_fold%i.h5' % fold
         input_file = os.path.join(CNN_OUTPUTS_DIR, file_name)
         check_file(input_file)
-        orig_model = tf.keras.models.load_model(input_file)
+        orig_model = tf.keras.models.load_model(input_file, compile=False)
 
         # Remove dense layer and create embeddings
         model = tf.keras.Model(inputs=orig_model.input, 
