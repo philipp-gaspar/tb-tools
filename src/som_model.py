@@ -73,6 +73,13 @@ if __name__ == "__main__":
         som.pca_weights_init(data)
         som.train(data, num_iteration=1000, verbose=True)
 
+        # -------------------- #
+        #    SAVING OUTPUTS    #
+        # ==================== #
+        file_path = os.path.join(OUTPUTS_DIR, 'som_fold%i.pkl' % fold)
+        with open(file_path, 'wb') as fp:
+            pickle.dump(som, fp)
+
         # # ---- FIGURE #1 ---- #
         # colors = ['C3', 'C2']
         # w_x, w_y = zip(*[som.winner(d) for d in data])
