@@ -74,7 +74,6 @@ if __name__ == "__main__":
 
         som.pca_weights_init(data)
         som.train(data, num_iteration=1000, verbose=True)
-
         
         # Get winner filenames for each neuron in SOM map
         winner_files = defaultdict(list)
@@ -89,6 +88,9 @@ if __name__ == "__main__":
             n_H0 = len([i for i in win_names if '_0.png' in i])
             n_H1 = len([i for i in win_names if '_1.png' in i])
             map_results[position] = (n_H0, n_H1)
+            logging.info(' - Neuron [%i, %i] = %i/%i events' % \
+                (position[0], position[1], n_H0, n_H1))
+        logging.info(' ')
                     
         # ------------------------------ #
         #    SAVING RESULTS & OUTPUTS    #
