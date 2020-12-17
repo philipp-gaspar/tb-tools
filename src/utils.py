@@ -120,8 +120,10 @@ def get_label(file_path):
 
 def parse_images(filename, width, height, channels):
     """
-    Reads an image from a file, decodes it into a dense tensor, 
+    Reads an image from a PNG file, decodes it into a dense tensor, 
     and resizes it to a fixed shape.
+
+    NOTE: Only tested for Schenzen images.
     """
     parts = tf.strings.split(filename, os.sep)
     name = parts[-1]
@@ -133,8 +135,19 @@ def parse_images(filename, width, height, channels):
     image = tf.image.decode_png(image, channels=channels)
     image = tf.image.convert_image_dtype(image, tf.float32)
     image = tf.image.resize(image, [width, height])
-    
-    # add batch dimension
-    #image = tf.expand_dims(image, axis=0)
 
     return image, label
+
+def create_batch_dataset(X, batch_size, width=128, height=128, channels=1):
+    """
+    Get PNG images and convert it to a TensorFlow Batch Dataset.
+
+    NOTE: Only tested for Schenzen images.
+    """
+    file_ds = tf.data.Dataset.from_tensor_slices(X)
+    ds = file_ds.map(
+        lambda file: parse_images(file, width, height, channels))
+
+    ds = ds.batch(batch_size).cache().prefetch(tf.data.experimental.AUTOTUNE)
+
+    return ds
