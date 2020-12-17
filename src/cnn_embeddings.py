@@ -74,11 +74,15 @@ if __name__ == '__main__':
         embeddings = tf.concat(embeddings, axis=0)
         targets = tf.concat(targets, axis=0)
 
+        # Get file names
+        file_names = [file.split('/')[-1] for file in X_trn]
+
         # ------------------------------- #
         #    SAVING EMBEDDINGS & MODELS   #
         # =============================== #
         results = {'X': embeddings.numpy(), 
-                   'y': targets.numpy()}
+                   'y': targets.numpy(), 
+                   'files': file_names}
 
         file_path = os.path.join(results_dir, 'embedding_fold%i.pkl' % fold)
         with open(file_path, 'wb') as fp:
