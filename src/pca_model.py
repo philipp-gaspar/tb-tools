@@ -27,7 +27,7 @@ SEED = 13
 np.random.seed(SEED)
 
 if __name__ == "__main__":
-    # set logger
+    # Set logger
     now = datetime.now()
     date = str(now.strftime('%d.%b.%y'))
     log_name = 'PCA_%s.log' % (str(date))
