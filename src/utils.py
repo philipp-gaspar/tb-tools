@@ -3,12 +3,13 @@ import sys
 import tensorflow as tf
 import numpy as np
 import glob
+import logging
 
 from tensorflow.keras.callbacks import Callback
 from sklearn.metrics import roc_curve
 from collections import Counter
 
-# ===================== #
+# --------------------- #
 #    KERAS CALLBACKS    #
 # ===================== #
 class EarlyStoppingAtSP(Callback):
@@ -55,7 +56,35 @@ class EarlyStoppingAtSP(Callback):
         if self.stopped_epoch > 0:
             print('Epoch %05d: early stopping' % (self.stopped_epoch + 1))
 
-# ================== #
+# ---------------------- #
+#    LOGGER FUNCTIONS    #
+# ====================== #
+def set_logger(log_path, mode='w'):
+    """
+    Sets the logger to log info in terminal and in the file 'log_path'.
+    In general, it is useful to have a logger so that every output
+    to the terminal is saved in a permanent file.
+
+    Example:
+    -------
+        logging.info('Start training...')
+    """
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+
+    if not logger.handlers:
+        # Logging to a file
+        file_handler = logging.FileHandler(log_path, mode=mode)
+        formatter = logging.Formatter('%(asctime)s: %(message)s')
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
+
+        # Logging to console
+        stream_handler = logging.StreamHandler()
+        stream_handler.setFormatter(logging.Formatter('%(message)s'))
+        logger.addHandler(stream_handler)
+
+# ------------------ #
 #    DATA HELPERS    #
 # ================== #
 def perform_xval(X, y, trn_idx, val_idx, verbose=True):
