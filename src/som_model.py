@@ -145,10 +145,3 @@ if __name__ == "__main__":
         plt.legend(patches, label_names.values(), bbox_to_anchor=(1.5, 1.5), ncol=3)
         output_file = os.path.join(FIGURES_DIR, 'map2_fold%i.png' % fold)
         plt.savefig(output_file, bbox_inches='tight', format='png')
-                
-
-
-        
-
-
-
