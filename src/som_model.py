@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import itertools
 
-from utils import parse_images, create_folder, load_filenames, check_file
+import utils as utils
 from minisom import MiniSom
 from sklearn.preprocessing import StandardScaler
 
@@ -21,9 +21,9 @@ EXPERIMENTS_DIR = os.path.join(PACKAGE_DIR, 'experiments')
 OUTPUTS_DIR = os.path.join(EXPERIMENTS_DIR, 'SOM', 'outputs')
 RESULTS_DIR = os.path.join(EXPERIMENTS_DIR, 'SOM', 'results')
 FIGURES_DIR = os.path.join(EXPERIMENTS_DIR, 'SOM', 'figures')
-create_folder(OUTPUTS_DIR)
-create_folder(RESULTS_DIR)
-create_folder(FIGURES_DIR)
+utils.create_folder(OUTPUTS_DIR)
+utils.create_folder(RESULTS_DIR)
+utils.create_folder(FIGURES_DIR)
 
 # important for reproducibility
 SEED = 13
@@ -41,7 +41,7 @@ if __name__ == "__main__":
         filename = 'embedding_fold%i.pkl' % fold
         embedding_dir = os.path.join(EXPERIMENTS_DIR, 'Schenzen-Embeddings', 'results')
         input_file = os.path.join(embedding_dir, filename)
-        check_file(input_file)
+        utils.check_file(input_file)
         
         # open dictionary with embeddings
         with open(input_file, 'rb') as handle:
