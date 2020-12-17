@@ -5,8 +5,8 @@ import glob
 
 import tensorflow as tf
 import numpy as np
+import utils as utils
 
-from utils import parse_images, create_folder, load_filenames, check_file
 from sklearn.decomposition import PCA
 
 # Define global variables
@@ -16,8 +16,8 @@ PACKAGE_DIR = os.path.join(HOME_DIR, 'BRICS-TB', 'tb-tools')
 EXPERIMENTS_DIR = os.path.join(PACKAGE_DIR, 'experiments')
 OUTPUTS_DIR = os.path.join(EXPERIMENTS_DIR, 'PCA', 'outputs')
 RESULTS_DIR = os.path.join(EXPERIMENTS_DIR, 'PCA', 'results')
-create_folder(OUTPUTS_DIR)
-create_folder(RESULTS_DIR)
+utils.create_folder(OUTPUTS_DIR)
+utils.create_folder(RESULTS_DIR)
 
 # important for reproducibility
 SEED = 13
