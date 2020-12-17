@@ -6,7 +6,7 @@ import pickle
 import tensorflow as tf
 import numpy as np
 
-from utils import create_folder, check_file
+import utils as utl
 from collections import Counter
 from sklearn.model_selection import StratifiedKFold
 
@@ -22,81 +22,6 @@ CNN_OUTPUTS_DIR = os.path.join(EXPERIMENTS_DIR, 'CNN', 'outputs')
 SEED = 13
 np.random.seed(SEED)
 
-def load_filenames(data_dir, dataset_name):
-    """
-    Read png data and return X and y vectors for model training.
-    """
-    input_files = dict()
-
-    if dataset_name == 'schenzen':
-        file_name = 'CHNCXR_*_0.png'
-        input_files['H0'] = glob.glob(os.path.join(data_dir, file_name))
-        file_name = 'CHNCXR_*_1.png'
-        input_files['H1'] = glob.glob(os.path.join(data_dir, file_name))
-
-        n_H0 = len(input_files['H0'])
-        n_H1 = len(input_files['H1'])
-
-        X = np.asarray(input_files['H0'] + input_files['H1'])
-        y = np.concatenate((np.zeros(n_H0), np.ones(n_H1)))
-    else:
-        print('Error! Not valid dataset name.')
-        sys.exit()
-
-    return X, y
-
-def perform_xval(X, y, trn_idx, val_idx, verbose=True):
-    """
-    Create X and y vectors for training and validation.
-    """
-    np.random.shuffle(trn_idx)
-    np.random.shuffle(val_idx)
-
-    X_trn, X_val = X[trn_idx], X[val_idx]
-    y_trn, y_val = y[trn_idx], y[val_idx]
-
-    if verbose:
-        trn_cnt = Counter(y_trn)
-        val_cnt = Counter(y_val)
-        print(' - Train: %i/%i' % (trn_cnt[0.0], trn_cnt[1.0]))
-        print(' - Valid: %i/%i\n' % (val_cnt[0.0], val_cnt[1.0]))
-
-    return X_trn, X_val, y_trn, y_val
-
-def parse_images(filename, width, height, channels):
-    """
-    Reads an image from a PNG file, decodes it into a dense tensor,
-    and resizes it to a fixed shape.
-
-    NOTE: Only tested for Schenzen images.
-    """
-    parts = tf.strings.split(filename, os.sep)
-    name = parts[-1]
-    label = tf.strings.substr(name, pos=-5, len=1)
-    label = tf.strings.to_number(label, 
-        out_type=tf.dtypes.int32)
-    
-    image = tf.io.read_file(filename)
-    image = tf.image.decode_png(image, channels=channels)
-    image = tf.image.convert_image_dtype(image, tf.float32)
-    image = tf.image.resize(image, [width, height])
-
-    return image, label
-
-def create_batch_dataset(X, batch_size, width=128, height=128, channels=1):
-    """
-    Get PNG images and convert it to a TensorFlow Batch Dataset.
-
-    NOTE: Only tested for Schenzen images.
-    """
-    files_ds = tf.data.Dataset.from_tensor_slices(X)
-    ds = files_ds.map(
-        lambda file: parse_images(file, width, height, channels))
-
-    ds = ds.batch(batch_size).cache().prefetch(tf.data.experimental.AUTOTUNE)
-
-    return ds
-
 if __name__ == '__main__':
     # -------------------- #
     #    LOAD FILENAMES    #
@@ -107,8 +32,8 @@ if __name__ == '__main__':
     exp_name = '%s-Embeddings' % (dataset_name.title())
     outputs_dir = os.path.join(EXPERIMENTS_DIR, exp_name, 'outputs')
     results_dir = os.path.join(EXPERIMENTS_DIR, exp_name, 'results')
-    create_folder(outputs_dir)
-    create_folder(results_dir)
+    utl.create_folder(outputs_dir)
+    utl.create_folder(results_dir)
 
     # --------------------------------------- #
     #    STRATIFIED KFOLD CROSS VALIDATION    #
@@ -131,7 +56,7 @@ if __name__ == '__main__':
         # Load TensorFlow original trained model
         file_name = 'cnn_fold%i.h5' % fold
         input_file = os.path.join(CNN_OUTPUTS_DIR, file_name)
-        check_file(input_file)
+        utl.check_file(input_file)
         orig_model = tf.keras.models.load_model(input_file, compile=False)
 
         # Remove dense layer and create embeddings
