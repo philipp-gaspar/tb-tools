@@ -6,7 +6,7 @@ import pickle
 import tensorflow as tf
 import numpy as np
 
-import utils as utl
+import utils as utils
 from collections import Counter
 from sklearn.model_selection import StratifiedKFold
 
@@ -27,13 +27,13 @@ if __name__ == '__main__':
     #    LOAD FILENAMES    #
     # ==================== #
     dataset_name = 'schenzen'
-    X, y = load_filenames(DATA_DIR, dataset_name)
+    X, y = utils.load_filenames(DATA_DIR, dataset_name)
 
     exp_name = '%s-Embeddings' % (dataset_name.title())
     outputs_dir = os.path.join(EXPERIMENTS_DIR, exp_name, 'outputs')
     results_dir = os.path.join(EXPERIMENTS_DIR, exp_name, 'results')
-    utl.create_folder(outputs_dir)
-    utl.create_folder(results_dir)
+    utils.create_folder(outputs_dir)
+    utils.create_folder(results_dir)
 
     # --------------------------------------- #
     #    STRATIFIED KFOLD CROSS VALIDATION    #
@@ -46,17 +46,17 @@ if __name__ == '__main__':
     for trn_idx, val_idx in kfold.split(X, y):
         print('Fold #%i' % fold)
 
-        X_trn, X_val, y_trn, y_val = perform_xval(X, y, trn_idx, val_idx)
+        X_trn, X_val, y_trn, y_val = utils.perform_xval(X, y, trn_idx, val_idx)
 
         # --------------------------------------- #
         #    TENSORFLOW BATCH DATASET PIPELINE    #
         # ======================================= #
-        train_ds = create_batch_dataset(X_trn, batch_size=64)
+        train_ds = utils.create_batch_dataset(X_trn, batch_size=64)
 
         # Load TensorFlow original trained model
         file_name = 'cnn_fold%i.h5' % fold
         input_file = os.path.join(CNN_OUTPUTS_DIR, file_name)
-        utl.check_file(input_file)
+        utils.check_file(input_file)
         orig_model = tf.keras.models.load_model(input_file, compile=False)
 
         # Remove dense layer and create embeddings
