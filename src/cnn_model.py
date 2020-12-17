@@ -15,7 +15,7 @@ from tensorflow.keras import backend as K
 import numpy as np
 
 from utils import parse_images, EarlyStoppingAtSP, create_folder, load_filenames
-from utils import perform_xval
+from utils import perform_xval, create_batch_dataset
 from collections import Counter
 from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import confusion_matrix, roc_curve, auc
@@ -80,7 +80,7 @@ if __name__ == "__main__":
     valid_metrics = {'acc': [], 'auc': [], 'tnr': [], 'fnr': [],
                      'tpr': [], 'fpr': [], 'sp': [], 'loss': []}
 
-    # ======================================= #
+    # --------------------------------------- #
     #    STRATIFIED KFOLD CROSS VALIDATION    #
     # ======================================= #
     kfold = StratifiedKFold(n_splits=10, 
@@ -93,26 +93,22 @@ if __name__ == "__main__":
 
         X_trn, X_val, y_trn, y_val = perform_xval(X, y, trn_idx, val_idx)
 
-        # ================================= #
-        #    TENSORFLOW DATASET PIPELINE    #
-        # ================================= #
+        # -------------------------------------- #
+        #    TENSORFLOW BATCH DATASET PIPELINE   #
+        # ====================================== #
         width = 128
         height = 128
         channels = 1
         
         # train dataset 
-        train_files_ds = tf.data.Dataset.from_tensor_slices(X_trn)
-        train_ds = train_files_ds.map(
-            lambda file: parse_images(file, width, height, channels))
-        train_ds = train_ds.batch(BATCH_SIZE)
+        train_ds = create_batch_dataset(X_trn, batch_size=BATCH_SIZE, 
+            width=width, height=height, channels=channels)
 
         # valid dataset
-        valid_files_ds = tf.data.Dataset.from_tensor_slices(X_val)
-        valid_ds = valid_files_ds.map(
-            lambda file: parse_images(file, width, height, channels))
-        valid_ds = valid_ds.batch(len(y_val))
+        valid_ds = create_batch_dataset(X_val, batch_size=len(y_val), 
+            width=width, height=height, channels=channels)
 
-        # ================= #
+        # ----------------- #
         #    TRAIN MODEL    #
         # ================= #
         K.clear_session()
@@ -145,7 +141,6 @@ if __name__ == "__main__":
         valid_metrics['loss'].append(val_loss)
 
         # --- ROC CURVE & SP INDEX (TRAIN) --- #
-        #y_prob_trn = model.predict(X_trn.reshape(-1,8,8,1))
         y_prob_trn = model.predict(train_ds)
         fpr, tpr, threshold = roc_curve(y_trn, y_prob_trn)
         trn_auc = auc(fpr, tpr)
@@ -165,7 +160,6 @@ if __name__ == "__main__":
         train_metrics['fnr'].append(fn/(tp+fn))
 
         # --- ROC CURVE & SP INDEX (VALID) --- #
-        #y_prob_val = model.predict(X_val.reshape(-1,8,8,1))
         y_prob_val = model.predict(valid_ds)
         fpr, tpr, threshold = roc_curve(y_val, y_prob_val)
         val_auc = auc(fpr, tpr)
