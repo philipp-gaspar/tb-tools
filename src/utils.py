@@ -4,9 +4,9 @@ import tensorflow as tf
 import numpy as np
 import glob
 
-
 from tensorflow.keras.callbacks import Callback
 from sklearn.metrics import roc_curve
+from collections import Counter
 
 # ===================== #
 #    KERAS CALLBACKS    #
