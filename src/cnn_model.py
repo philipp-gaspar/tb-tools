@@ -15,6 +15,7 @@ from tensorflow.keras import backend as K
 import numpy as np
 
 from utils import parse_images, EarlyStoppingAtSP, create_folder, load_filenames
+from utils import perform_xval
 from collections import Counter
 from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import confusion_matrix, roc_curve, auc
@@ -90,18 +91,7 @@ if __name__ == "__main__":
     for trn_idx, val_idx in kfold.split(X, y):
         print('Fold #%i' % fold)
 
-        # shuffle indexes
-        np.random.shuffle(trn_idx)
-        np.random.shuffle(val_idx)
-
-        X_trn, X_val = X[trn_idx], X[val_idx]
-        y_trn, y_val = y[trn_idx], y[val_idx]
-
-        # count entries for each class
-        trn_cnt = Counter(y_trn)
-        val_cnt = Counter(y_val)
-        print(' - Train: %i/%i' % (trn_cnt[0.0], trn_cnt[1.0]))
-        print(' - Valid: %i/%i\n' % (val_cnt[0.0], val_cnt[1.0]))
+        X_trn, X_val, y_trn, y_val = perform_xval(X, y, trn_idx, val_idx)
 
         # ================================= #
         #    TENSORFLOW DATASET PIPELINE    #

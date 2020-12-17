@@ -58,6 +58,24 @@ class EarlyStoppingAtSP(Callback):
 # ================== #
 #    DATA HELPERS    #
 # ================== #
+def perform_xval(X, y, trn_idx, val_idx, verbose=True):
+    """
+    Create X and y vectors for training and validation.
+    """
+    np.random.shuffle(trn_idx)
+    np.random.shuffle(val_idx)
+
+    X_trn, X_val = X[trn_idx], X[val_idx]
+    y_trn, y_val = y[trn_idx], y[val_idx]
+
+    if verbose:
+        trn_cnt = Counter(y_trn)
+        val_cnt = Counter(y_val)
+        print(' - Train: %i/%i' % (trn_cnt[0.0], trn_cnt[1.0]))
+        print(' - Valid: %i/%i\n' % (val_cnt[0.0], val_cnt[1.0]))
+
+    return X_trn, X_val, y_trn, y_val
+
 def load_filenames(data_dir, dataset_name):
     """
     Read png data and return X and y vectors for model training.
