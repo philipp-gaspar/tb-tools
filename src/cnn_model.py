@@ -14,14 +14,25 @@ from tensorflow.keras import backend as K
 
 import numpy as np
 
+try:
+    flag = int(os.environ['COLAB'])
+    sys.path.append('/content/drive/My Drive/BRICS - TB Latente/Sampling')
+except:
+    flag = 0    
+
 from utils import parse_images, EarlyStoppingAtSP, create_folder, load_filenames
 from utils import perform_xval, create_batch_dataset
 from collections import Counter
 from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import confusion_matrix, roc_curve, auc
 
-HOME_DIR = os.environ['HOME']
-DATA_DIR = os.path.join(HOME_DIR, 'BRICS-TB', 'data-schenzen', 'raw')
+if flag:
+    HOME_DIR = "/content/drive/My Drive/BRICS - TB Latente/Sampling/"
+    DATA_DIR = os.path.join("/content/drive/My Drive/BRICS - TB Latente/Dados/ChinaSet_AllFiles/CXR_png")
+else:
+    HOME_DIR = os.environ['HOME']
+    DATA_DIR = os.path.join(HOME_DIR, 'BRICS-TB', 'data-schenzen', 'raw')
+        
 PACKAGE_DIR = os.path.join(HOME_DIR, 'BRICS-TB', 'tb-tools')
 
 EXPERIMENTS_DIR = os.path.join(PACKAGE_DIR, 'experiments')
