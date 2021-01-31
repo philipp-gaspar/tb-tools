@@ -14,24 +14,22 @@ from tensorflow.keras import backend as K
 
 import numpy as np
 
-try:
-    flag = int(os.environ['COLAB'])
-except:
-    flag = 0    
-
 from utils import parse_images, EarlyStoppingAtSP, create_folder, load_filenames
 from utils import perform_xval, create_batch_dataset
 from collections import Counter
 from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import confusion_matrix, roc_curve, auc
 
-if flag:
+# Define global variables
+try:
+    flag = int(os.environ['COLAB'])
     HOME_DIR = "/content/drive/MyDrive/TB-TOOLS"
     DATA_DIR = os.path.join("/content/drive/My Drive/BRICS - TB Latente/Dados/ChinaSet_AllFiles/CXR_png")
-else:
+except:
+    flag = 0   
     HOME_DIR = os.environ['HOME']
-    DATA_DIR = os.path.join(HOME_DIR, 'BRICS-TB', 'data-schenzen', 'raw')
-        
+    DATA_DIR = os.path.join(HOME_DIR, 'BRICS-TB', 'data-schenzen', 'raw') 
+         
 PACKAGE_DIR = os.path.join(HOME_DIR, 'BRICS-TB', 'tb-tools')
 
 EXPERIMENTS_DIR = os.path.join(PACKAGE_DIR, 'experiments')
@@ -47,6 +45,8 @@ height = 128
 channels = 1
 BATCH_SIZE = 64
 
+
+#getting all data
 input_files = dict()
 file_name = 'CHNCXR_*_0.png'
 input_files['H0'] = glob.glob(os.path.join(DATA_DIR, file_name))
@@ -68,11 +68,6 @@ eval_ds = eval_ds.batch(BATCH_SIZE)
 filename = 'cnn_fold*.h5'
 
 MODELS = glob.glob(os.path.join(OUTPUT_DIR, filename))
-
-
-# evaluate_metrics = {'acc': [], 'auc': [], 'tnr': [], 'fnr': [],
-#             'tpr': [], 'fpr': [], 'sp': [], 'loss': [],
-#             'tp':[],'tn':[],'fp':[],'fn':[]}
 
 for i in range(1, len(MODELS)+1):
     evaluate_metrics = {}
@@ -121,7 +116,7 @@ for i in range(1, len(MODELS)+1):
     print('tpr: '+str(tp/(tp+fn)), 'tnr: '+str(tn/(tn+fp)), 'fpr: '+str(fp/(fp+tn)),'fnr: '+str(fn/(tp+fn)))
     print('ACCURACY: '+str((tp+tn)/(tp+tn+fp+fn))+'\n')
 
-    #saving
+    #saving results
     file_path = os.path.join(EVALUATIONS_DIR, 'eval{}.pkl'.format(i))
     with open(file_path, 'wb') as fp:
         pickle.dump(evaluate_metrics, fp)

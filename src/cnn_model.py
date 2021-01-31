@@ -16,7 +16,6 @@ import numpy as np
 
 try:
     flag = int(os.environ['COLAB'])
-    sys.path.append('/content/drive/My Drive/BRICS - TB Latente/Sampling')
 except:
     flag = 0    
 
