@@ -1,5 +1,6 @@
 import sys
 import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2' 
 import pickle
 import glob
 import logging
@@ -13,9 +14,14 @@ from datetime import datetime
 from joblib import dump
 
 # Define global variables
-HOME_DIR = os.environ['HOME']
-PACKAGE_DIR = os.path.join(HOME_DIR, 'BRICS-TB', 'tb-tools')
+try:
+    flag = int(os.environ['COLAB'])
+    HOME_DIR = "/content/drive/MyDrive/TB-TOOLS"
+except:
+    flag = 0   
+    HOME_DIR = os.environ['HOME']
 
+PACKAGE_DIR = os.path.join(HOME_DIR, 'BRICS-TB', 'tb-tools')
 EXPERIMENTS_DIR = os.path.join(PACKAGE_DIR, 'experiments')
 OUTPUTS_DIR = os.path.join(EXPERIMENTS_DIR, 'PCA', 'outputs')
 RESULTS_DIR = os.path.join(EXPERIMENTS_DIR, 'PCA', 'results')

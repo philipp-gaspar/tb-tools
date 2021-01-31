@@ -1,5 +1,6 @@
 import sys
 import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2' 
 import glob
 import pickle
 
@@ -11,8 +12,15 @@ from collections import Counter
 from sklearn.model_selection import StratifiedKFold
 
 # Define global variables
-HOME_DIR = os.environ['HOME']
-DATA_DIR = os.path.join(HOME_DIR, 'BRICS-TB', 'data-schenzen', 'raw')
+try:
+    flag = int(os.environ['COLAB'])
+    HOME_DIR = "/content/drive/MyDrive/TB-TOOLS"
+    DATA_DIR = os.path.join("/content/drive/My Drive/BRICS - TB Latente/Dados/ChinaSet_AllFiles/CXR_png")
+except:
+    flag = 0   
+    HOME_DIR = os.environ['HOME']
+    DATA_DIR = os.path.join(HOME_DIR, 'BRICS-TB', 'data-schenzen', 'raw') 
+
 PACKAGE_DIR = os.path.join(HOME_DIR, 'BRICS-TB', 'tb-tools')
 
 EXPERIMENTS_DIR = os.path.join(PACKAGE_DIR, 'experiments')

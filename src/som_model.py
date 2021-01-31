@@ -1,5 +1,7 @@
 import sys
 import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2' 
+
 import pickle
 import glob
 import logging
@@ -18,7 +20,13 @@ from collections import Counter, defaultdict
 from itertools import product
 
 # Define global variables
-HOME_DIR = os.environ['HOME']
+try:
+    flag = int(os.environ['COLAB'])
+    HOME_DIR = "/content/drive/MyDrive/TB-TOOLS"
+except:
+    flag = 0   
+    HOME_DIR = os.environ['HOME']
+
 PACKAGE_DIR = os.path.join(HOME_DIR, 'BRICS-TB', 'tb-tools')
 
 EXPERIMENTS_DIR = os.path.join(PACKAGE_DIR, 'experiments')

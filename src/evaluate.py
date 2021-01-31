@@ -1,5 +1,6 @@
 import sys
 import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2' 
 import glob
 import shutil
 import argparse
@@ -69,7 +70,7 @@ filename = 'cnn_fold*.h5'
 
 MODELS = glob.glob(os.path.join(OUTPUT_DIR, filename))
 
-for i in range(1, len(MODELS)+1):
+for i in range(len(MODELS)):
     evaluate_metrics = {}
     print('MODEL '+str(i)+'/10')
     #evaluation metrics
