@@ -56,6 +56,29 @@ class EarlyStoppingAtSP(Callback):
         if self.stopped_epoch > 0:
             print('Epoch %05d: early stopping' % (self.stopped_epoch + 1))
 
+# ------------------- #
+#    SETUP HELPERS    #
+# =================== #
+def setup_murabei_imaging(mode='local'):
+    """
+    Define path variables for Imaging Analysis.
+    """
+    paths = {}
+    if mode == 'local':
+        paths['home'] = os.environ['HOME']
+        paths['data'] = os.path.join(paths['home'], 'BRICS-TB', 'data-imaging')
+        paths['package'] = os.path.join(paths['home'], 'BRICS-TB', 'tb-tools')
+
+        paths['experiments'] = os.path.join(paths['package'], 'experiments')
+        paths['outputs'] = os.path.join(paths['experiments'], 'IMG', 'outputs')
+        paths['results'] = os.path.join(paths['experiments'], 'IMG', 'results')
+        
+        create_folder(paths['outputs'])
+        create_folder(paths['results'])
+
+    return paths
+
+
 # ---------------------- #
 #    LOGGER FUNCTIONS    #
 # ====================== #
