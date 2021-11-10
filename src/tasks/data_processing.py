@@ -112,31 +112,31 @@ class WriteTFRecords(luigi.Task):
 # --------------------- #
 #    READ TF-RECORDS    #
 # ===================== #
-class ReadTFRecords(luigi.Task):
-    def requires(self):
-        return WriteTFRecords()
+# class ReadTFRecords(luigi.Task):
+#     def requires(self):
+#         return WriteTFRecords()
 
-    def _read_examples(self):
+#     def _read_examples(self):
 
-    def run(self):
-        ignore_order = tf.data.Options()
-        ignore_order.experimental_deterministic = False # disable order, increase speed
+#     def run(self):
+#         ignore_order = tf.data.Options()
+#         ignore_order.experimental_deterministic = False # disable order, increase speed
         
-        input_filepath = self.input().open().name
-        dataset = tf.data.TFRecordDataset(input_filepath)
+#         input_filepath = self.input().open().name
+#         dataset = tf.data.TFRecordDataset(input_filepath)
 
-        # create a dictionary describing the features
-        tfrecord_format = {
-            'photo_id': tf.io.FixedLenFeature([], tf.int64), 
-            'xray_id': tf.io.FixedLenFeature([], tf.int64), 
-            'setting_id': tf.io.FixedLenFeature([], tf.int64), 
-            'replica_id': tf.io.FixedLenFeature([], tf.int64),
-            'cell': tf.io.FixedLenFeature([], tf.string), 
-            'image_encoded': tf.io.FixedLenFeature([], tf.string), 
-        }
+#         # create a dictionary describing the features
+#         tfrecord_format = {
+#             'photo_id': tf.io.FixedLenFeature([], tf.int64), 
+#             'xray_id': tf.io.FixedLenFeature([], tf.int64), 
+#             'setting_id': tf.io.FixedLenFeature([], tf.int64), 
+#             'replica_id': tf.io.FixedLenFeature([], tf.int64),
+#             'cell': tf.io.FixedLenFeature([], tf.string), 
+#             'image_encoded': tf.io.FixedLenFeature([], tf.string), 
+#         }
 
 
         
-        print('=========================\n\n')
-        print(dataset)
-        print('\n\n===========================')
+#         print('=========================\n\n')
+#         print(dataset)
+#         print('\n\n===========================')
